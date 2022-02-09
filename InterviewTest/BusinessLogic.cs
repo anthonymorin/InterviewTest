@@ -24,8 +24,9 @@ namespace InterviewTest
     /// 
     /// You should read the files in the DoNotEdit folder for context, but those classes should not be changed.
     /// 
-    /// The following page is a useful refresher for some of the issues in this code 
+    /// The following pages are a useful refresher for some of the issues in this code 
     /// https://en.wikipedia.org/wiki/Anti-pattern#Software_engineering
+    /// https://www.c-sharpcorner.com/article/common-code-smell-mistakes-in-c-sharp-part-1/
     /// 
     /// Please submit your work as a pull request when you finish
     /// </summary>
