@@ -31,7 +31,7 @@ namespace InterviewTest
     /// https://en.wikipedia.org/wiki/Anti-pattern#Software_engineering
     /// https://www.c-sharpcorner.com/article/common-code-smell-mistakes-in-c-sharp-part-1/
     /// 
-    /// Please submit your work as a pull request when you finish
+    /// Please commit your work on your own branch and push to the remote repo when you finish
     /// </summary>
     internal class BusinessLogic
     {
