@@ -1,6 +1,6 @@
 # Welcome to my general c# knowledge test
 
-*IMPORTANT*: Before you start, please create a branch from 'master' so you can commit onto your own branch
+**IMPORTANT**: Before you start, please create a branch from 'master' so you can commit onto your own branch
 
 The code in the [BusinessLogic.cs](https://github.com/anthonymorin/InterviewTest/blob/master/InterviewTest/BusinessLogic.cs) page has various known issues.   
 These could include, and may not be limited to:  
@@ -22,4 +22,4 @@ The following pages are a useful refresher for some of the issues in this code
 https://en.wikipedia.org/wiki/Anti-pattern#Software_engineering  
 https://www.c-sharpcorner.com/article/common-code-smell-mistakes-in-c-sharp-part-1/  
  
- *Please commit your work on your own branch and push to the remote repo when you finish*
+ **Please commit your work on your own branch and push to the remote repo when you finish**
