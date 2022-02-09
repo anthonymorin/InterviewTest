@@ -2,7 +2,7 @@
 
 *IMPORTANT*: Before you start, please create a branch from 'master' so you can commit onto your own branch
 
-The code in the BusinessLogic.cs page has various known issues.   
+The code in the [BusinessLogic.cs](https://github.com/anthonymorin/InterviewTest/blob/master/InterviewTest/BusinessLogic.cs) page has various known issues.   
 These could include, and may not be limited to:  
 * stylistic problems
 * redundancy
