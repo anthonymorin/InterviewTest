@@ -9,7 +9,7 @@ namespace InterviewTest
     /// <summary>
     /// Welcome to my general c# knowledge test
     ///
-    /// IMPORTANT: Before you start, please create a branch from 'master', as the repo requires a pull request from another branch to submit your work
+    /// IMPORTANT: Before you start, please create a branch from 'master' so you can commit onto your own branch
     ///
     /// The code in this page has various known issues.  
     /// These could include, and may not be limited to:
