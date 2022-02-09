@@ -16,7 +16,7 @@ You should hopefully be able to infer what the correct output should be by asses
 
 I would like you to refactor this code to make it as correct and readable as you can.
 
-You should read the files in the DoNotEdit folder for context, but those classes should not be changed.
+You should read the files in the [DoNotEdit](https://github.com/anthonymorin/InterviewTest/tree/master/InterviewTest/DoNotEdit) folder for context, but those classes should not be changed.
 
 The following pages are a useful refresher for some of the issues in this code  
 https://en.wikipedia.org/wiki/Anti-pattern#Software_engineering  
