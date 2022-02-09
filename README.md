@@ -2,8 +2,8 @@
 
 *IMPORTANT*: Before you start, please create a branch from 'master' so you can commit onto your own branch
 
-The code in this page has various known issues.  
-These could include, and may not be limited to:
+The code in this page has various known issues.   
+These could include, and may not be limited to:  
 * stylistic problems
 * redundancy
 * bad practices
@@ -11,7 +11,7 @@ These could include, and may not be limited to:
 * concurrency issues
 * inefficiency
     
-Running the current implementation, the output is not correct
+Running the current implementation, the output is not correct  
 You should hopefully be able to infer what the correct output should be by assessing the current, incorrect output.
 
 I would like you to refactor this code to make it as correct and readable as you can.
