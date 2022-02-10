@@ -36,125 +36,113 @@ namespace InterviewTest
     internal class BusinessLogic
     {
         public int ordernumber = 0;
-        public Exception? CurrentException;
         public Task<IResult> ProcessOrder(IUserInput input, ILogger log)
         {
-            return Task.Run<IResult>(() =>
-            {
-                CurrentException = null;
+            return ProcessOrderImpl(input, log);
+        }
+
+        private async Task<IResult> ProcessOrderImpl(IUserInput input, ILogger log)
+        {
+            Result result = new Result(){
+                Success = true,
+                Exception = null,
+                OrderNumber = 0
+            };
 
                 //verify information
                 try
                 {
-                    Utilities.VerifyInformation(input).Wait();
-                    log.Log("Info verified successfully");
-                    log.Log(input.UserInfo);
-                    log.Log(input.ShippingAddress);
-                    log.Log(input.Cart);
-                    log.Log(input.Card);
+                    await Utilities.VerifyInformation(input);
+                    NicerLog("Info verified successfully", input);
                 }
                 catch (Exception ex)
                 {
-                    CurrentException = ex;
-                    log.Log("Exception thrown when verifying info");
-                    log.Log(input.UserInfo);
-                    log.Log(input.ShippingAddress);
-                    log.Log(input.Cart);
-                    log.Log(input.Card);
+                    return FailedStep(ex, result, "verification");
                 }
-
-                Result result = new Result();
-                result.OrderNumber = ordernumber;
-                ordernumber++;
-
+                
+                lock (this)
+                {
+                    // Assumption: Order number doesn't matter if info not verified
+                    result.OrderNumber = ordernumber;
+                    ordernumber++;
+                }
+                
                 //process payment
                 try
                 {
-                    double sum = 0;
+                    decimal sum = 0;
 
                     foreach (var item in input.Cart)
                     {
-                        sum += item.Quantity * (double)item.UnitPrice;
+                        sum += item.Quantity * item.UnitPrice;
+                    }
+
+                    await Utilities.SubmitCreditCardOrder(input.Card, sum);
+                    NicerLog("Payment processed successfully", input);
+  
+                    }
+                    catch (Exception ex)
+                    {
+                        return FailedStep(ex, result, "payment");
                     }
 
 
-                    Utilities.SubmitCreditCardOrder(input.Card, (decimal)sum).Wait();
-                    log.Log("Payment processed successfully");
-                    log.Log(input.UserInfo);
-                    log.Log(input.ShippingAddress);
-                    log.Log(input.Cart);
-                    log.Log(input.Card);
-                }
-                catch (Exception ex)
-                {
-                    CurrentException = ex;
-                    log.Log("Exception thrown when processing payment");
-                    log.Log(input.UserInfo);
-                    log.Log(input.ShippingAddress);
-                    log.Log(input.Cart);
-                    log.Log(input.Card);
-                }
-
                 //initiate shipment
-                try
-                {
-                    Utilities.Ship(input.ShippingAddress, input.Cart).Wait();
-                    log.Log("Shipment initiated successfully");
-                    log.Log(input.UserInfo);
-                    log.Log(input.ShippingAddress);
-                    log.Log(input.Cart);
-                    log.Log(input.Card);
-                }
-                catch (Exception ex)
-                {
-                    CurrentException = ex;
-                    log.Log("Exception thrown when initiating shipment");
-                    log.Log(input.UserInfo);
-                    log.Log(input.ShippingAddress);
-                    log.Log(input.Cart);
-                    log.Log(input.Card);
-                }
+                
+                    try
+                    {
+                        // maybe try to get rid of exception, handle more gracefully
+                        await Utilities.Ship(input.ShippingAddress, input.Cart);
+                        NicerLog("Shipment initiated  successfully", input);
+                    }
+                    catch (Exception ex)
+                    {
+                        return FailedStep(ex, result, "Shipping");
+                    }
+
 
                 //send confirmation email
-                try
-                {
-                    Utilities.SendConfirmation(input.UserInfo, input.UserInfo).Wait();
-                    log.Log("Confirmation email sent successfully");
-                    log.Log(input.UserInfo);
-                    log.Log(input.ShippingAddress);
-                    log.Log(input.Cart);
-                    log.Log(input.Card);
-                }
-                catch (Exception ex)
-                {
-                    CurrentException = ex;
-                    log.Log("Exception thrown when sending confirmation email");
-                    log.Log(input.UserInfo);
-                    log.Log(input.ShippingAddress);
-                    log.Log(input.Cart);
-                    log.Log(input.Card);
-                }
-
-
-                if (CurrentException != null)
-                {
-                    result.Exception = CurrentException;
-                    result.Success = false;
-                    log.Log("Order cancelled because exception was thrown");
-                    log.Log(input.UserInfo);
-                    log.Log(input.ShippingAddress);
-                    log.Log(input.Cart);
-                    log.Log(input.Card);
-                }
+                    try
+                    {
+                        // maybe try to get rid of exception, handle more gracefully
+                        await Utilities.SendConfirmation(input.UserInfo, input.UserInfo);
+                        NicerLog("Confirmation email sent successfully", input);
+                    }
+                    catch (Exception ex)
+                    {
+                        return FailedStep(ex, result, "Confirmation");
+                    }
 
                 return result;
-            });
         }
+
+        private void NicerLog(string msg, IUserInput input)
+        {
+            log.Log(msg);
+            log.Log(input.UserInfo);
+            log.Log(input.ShippingAddress);
+            log.Log(input.Cart);
+            log.Log(input.Card);
+        }
+
+        private Result FailedStep(Exception ex, Result result, string msg)
+        {
+                    result.Exception = ex;
+                    result.Success = false;
+                    log.Log("Order cancelled because exception was thrown: " + msg);
+                    log.Log(input.UserInfo);
+                    log.Log(input.ShippingAddress);
+                    log.Log(input.Cart);
+                    log.Log(input.Card);
+
+                    return result;
+        }
+
 
         public class Result : IResult
         {
-            bool isSuccess;
-            Exception? exception;
+            // bool isSuccess; // delete
+            // Exception? exception; // dlete
 
             public int OrderNumber
             {
@@ -162,14 +150,16 @@ namespace InterviewTest
             }
             public bool Success 
             {
-                get { return isSuccess; }
-                set { isSuccess = value; }
+                get; set;
+                // get { return isSuccess; }
+                // set { isSuccess = value; }
             }
 
             public Exception? Exception 
             {
-                get => exception; 
-                set => exception = value; 
+                get; set;
+                // get => exception; 
+                // set => exception = value; 
             }
         }
     }
