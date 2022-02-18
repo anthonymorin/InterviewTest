@@ -22,4 +22,4 @@ The following pages are a useful refresher for some of the issues in this code
 https://en.wikipedia.org/wiki/Anti-pattern#Software_engineering  
 https://www.c-sharpcorner.com/article/common-code-smell-mistakes-in-c-sharp-part-1/  
  
- **Please commit your work on your own branch and push to the remote repo when you finish**
+ **Please commit your work on your own branch and create a pull request to the master branch when you finish**
