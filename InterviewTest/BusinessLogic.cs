@@ -42,16 +42,23 @@ namespace InterviewTest
             return Task.Run<IResult>(() =>
             {
                 CurrentException = null;
-
+                bool cardinfovalid = false;
+                bool userinfovalid  =false;
+                bool isshippingaddressvalid = true;
                 //verify information
                 try
                 {
+                    if(input != null)
+                    {
                     Utilities.VerifyInformation(input).Wait();
                     log.Log("Info verified successfully");
                     log.Log(input.UserInfo);
                     log.Log(input.ShippingAddress);
                     log.Log(input.Cart);
                     log.Log(input.Card);
+                    userinfovalid = true;
+                    }
+
                 }
                 catch (Exception ex)
                 {
@@ -72,18 +79,26 @@ namespace InterviewTest
                 {
                     double sum = 0;
 
-                    foreach (var item in input.Cart)
+                    foreach (var item in input.Cart)//ex 3
                     {
                         sum += item.Quantity * (double)item.UnitPrice;
                     }
 
-
-                    Utilities.SubmitCreditCardOrder(input.Card, (decimal)sum).Wait();
-                    log.Log("Payment processed successfully");
-                    log.Log(input.UserInfo);
-                    log.Log(input.ShippingAddress);
-                    log.Log(input.Cart);
-                    log.Log(input.Card);
+                    if (userinfovalid)//card info varifcation only if user info is valid
+                    {
+                        Utilities.SubmitCreditCardOrder(input.Card, (decimal)sum).Wait();
+                        
+                        log.Log("Payment processed successfully");
+                        log.Log(input.UserInfo);
+                        log.Log(input.ShippingAddress);
+                        log.Log(input.Cart);
+                        log.Log(input.Card);
+                        cardinfovalid =true;
+                    }
+                    else
+                    {
+                        log.Log("failded  userifo validation not processing card validation");
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -98,32 +113,40 @@ namespace InterviewTest
                 //initiate shipment
                 try
                 {
-                    Utilities.Ship(input.ShippingAddress, input.Cart).Wait();
-                    log.Log("Shipment initiated successfully");
-                    log.Log(input.UserInfo);
-                    log.Log(input.ShippingAddress);
-                    log.Log(input.Cart);
-                    log.Log(input.Card);
+                    if(cardinfovalid)
+                    {
+                        Utilities.Ship(input.ShippingAddress, input.Cart).Wait();
+                        log.Log("Shipment initiated successfully");
+                        log.Log(input.UserInfo);
+                        log.Log(input.ShippingAddress);
+                        log.Log(input.Cart);
+                        log.Log(input.Card);
+                    }
                 }
                 catch (Exception ex)
                 {
+                    isshippingaddressvalid = false;
                     CurrentException = ex;
                     log.Log("Exception thrown when initiating shipment");
                     log.Log(input.UserInfo);
                     log.Log(input.ShippingAddress);
                     log.Log(input.Cart);
                     log.Log(input.Card);
+
                 }
 
                 //send confirmation email
                 try
                 {
-                    Utilities.SendConfirmation(input.UserInfo, input.UserInfo).Wait();
-                    log.Log("Confirmation email sent successfully");
-                    log.Log(input.UserInfo);
-                    log.Log(input.ShippingAddress);
-                    log.Log(input.Cart);
-                    log.Log(input.Card);
+                    if(isshippingaddressvalid)
+                    {
+                        Utilities.SendConfirmation(input.UserInfo, input.UserInfo).Wait();
+                        log.Log("Confirmation email sent successfully");
+                        log.Log(input.UserInfo);
+                        log.Log(input.ShippingAddress);
+                        log.Log(input.Cart);
+                        log.Log(input.Card);
+                    }
                 }
                 catch (Exception ex)
                 {
